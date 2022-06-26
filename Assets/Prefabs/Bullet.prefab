@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 4322493656402118101}
   - component: {fileID: 2813301821595615330}
   - component: {fileID: 7044031454463447825}
-  m_Layer: 0
+  - component: {fileID: -2226225560020436832}
+  m_Layer: 13
   m_Name: Bullet
-  m_TagString: AttackTrigger
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,3 +100,16 @@ MonoBehaviour:
   m_Camp: 2
   m_Speed: 10
   m_AliveTime: 5
+--- !u!135 &-2226225560020436832
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414087184525322035}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.49999997
+  m_Center: {x: 0, y: 0, z: 0}

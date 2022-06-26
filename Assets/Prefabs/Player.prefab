@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 6353493474746915135}
   - component: {fileID: 1639104179}
   - component: {fileID: 6644418644428347627}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6353493474746915134}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.7046419, y: 1.5571231, z: 0.8551853}
@@ -128,9 +128,10 @@ MonoBehaviour:
   m_Speed: 10
   m_DodgeSpeed: 10
   m_DodgeDistance: {fileID: 8030602589440474388}
+  m_Weapon: {fileID: 1452412359}
   m_Body: {fileID: 627657863746856766}
-  m_WeaponCollider: {fileID: 1452412358}
   m_Animator: {fileID: 6353493474813159816}
+  m_Info: {fileID: 0}
 --- !u!1 &7582822135283276223
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,8 +175,12 @@ PrefabInstance:
       value: SM_Weapon
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: cd7f123beb9ad564ea480ef439c3692b, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cd7f123beb9ad564ea480ef439c3692b, type: 3}
       propertyPath: m_TagString
-      value: AttackTrigger
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: cd7f123beb9ad564ea480ef439c3692b, type: 3}
       propertyPath: m_RootOrder
@@ -236,8 +241,8 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 217535214845887434}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
+  m_IsTrigger: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.38546824, y: 0.121235445, z: 1.3433175}
   m_Center: {x: -0.0000002163627, y: 0.0000015435535, z: 0.9342709}
@@ -325,18 +330,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100074, guid: 28d9858921bcecb4eb921f5360eb18d4, type: 3}
   m_PrefabInstance: {fileID: 6353493474822642920}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &468464885340998354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6353493474822674946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f2711c6866f46028cfff02ef16b6c10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5054766852937296395
 MonoBehaviour:
   m_ObjectHideFlags: 0

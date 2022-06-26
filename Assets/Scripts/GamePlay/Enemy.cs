@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour , ICamp
+public class Enemy : MonoBehaviour , ICamp , IHurt
 {
     public Camp Camp { get; set; }
 
@@ -9,9 +10,12 @@ public class Enemy : MonoBehaviour , ICamp
 
     [SerializeField]
     private float m_HurtingMaxCD = 0.5f;
-    
+
     [SerializeField]
     private int m_HealthMAX = 5;
+
+    [SerializeField]
+    private Scrollbar m_HealthScrollBar;
 
     [SerializeField]
     private Transform m_BulletDepot;
@@ -26,23 +30,25 @@ public class Enemy : MonoBehaviour , ICamp
     private MeshRenderer m_bodyMeshRenderer;
 
     private Player m_player;
-    private BoxCollider m_selfCollider;
+    private BoxCollider m_ownCollider;
+    private RaycastHit[] m_hitResults = new RaycastHit[RAYCAST_MAX_HIT_COUNT];
+
+    string[] m_layerMaskForReceive = { "MeleeWeapon" }; // projectile weapon doesn't need to detect injury, it will take the initiative to hurt.
 
     private float m_hurtingCD;
     private Color m_bodyColor = new Color(0.13f , 0.1f , 0.27f);
     private Color m_hurtingColor = new Color(0.69f , 0.1f , 0.27f);
-    
+
     private BulletPool m_bulletPool;
     private int m_currentHealth;
     private float m_time;
 
-    private const string ATTACK_TRIGGER = "AttackTrigger";
     private const int POOL_PRELOAD_COUNT = 6;
-
+    private const int RAYCAST_MAX_HIT_COUNT = 50;
 
     void Awake()
     {
-        m_selfCollider = GetComponent<BoxCollider>();
+        m_ownCollider = GetComponent<BoxCollider>();
         m_bulletPool = new BulletPool(POOL_PRELOAD_COUNT , m_BulletDepot , m_BulletPrefab);
         var playerObj = GameObject.FindWithTag(Camp.Player.ToString());
         if (playerObj != null)
@@ -52,13 +58,14 @@ public class Enemy : MonoBehaviour , ICamp
 
         m_BulletPrefab.SetCamp(Camp.Enemy);
     }
-    
+
     public void Initialize()
     {
         Camp = Camp.Enemy;
         m_currentHealth = m_HealthMAX;
+        m_HealthScrollBar.size = (float)m_currentHealth / m_HealthMAX;
         m_time = 0;
-        m_selfCollider.enabled = true;
+        m_ownCollider.enabled = true;
         m_bodyMeshRenderer.material.color = m_bodyColor;
         m_hurtingCD = 0;
     }
@@ -79,14 +86,35 @@ public class Enemy : MonoBehaviour , ICamp
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void FixedUpdate()
     {
-        if (other.CompareTag(ATTACK_TRIGGER))
+        GenerateBodyTriggerCast(out int hitCount);
+        DetectInjury(hitCount);
+    }
+
+    void GenerateBodyTriggerCast(out int hitCount)
+    {
+        Vector3 worldPos = m_ownCollider.transform.position;
+        Quaternion rotation = m_ownCollider.transform.rotation;
+
+        hitCount = Physics.BoxCastNonAlloc(worldPos + m_ownCollider.center , m_ownCollider.size / 2 ,
+                                           Vector3.forward , m_hitResults , rotation , 0 ,
+                                           LayerMask.GetMask(m_layerMaskForReceive));
+    }
+
+    void DetectInjury(int hitCount)
+    {
+        if (hitCount > 0)
         {
-            var camp = other.GetComponent<ICamp>();
-            if (camp != null && camp.Camp == Camp.Player)
+            for (int index = 0 ; index < hitCount ; index++)
             {
-                Hurt();
+                var hitObj = m_hitResults[index].collider.gameObject;
+                var camp = hitObj.GetComponent<ICamp>();
+                if (camp != null)
+                {
+                    if (camp.Camp == Camp.Player)
+                        Hurt();
+                }
             }
         }
     }
@@ -94,11 +122,17 @@ public class Enemy : MonoBehaviour , ICamp
     void Attack()
     {
         var bullet = m_bulletPool.Get();
-        bullet.OnDisappear += RecycleBullet;
-        bullet.ShootAtTarget(m_player.Body, Camp.Player);
+        bullet.OnHitTarget += HitTarget;
+        bullet.OnDeath += RecycleBullet;
+        bullet.ShootAtTarget(m_player.transform , m_player.Body);
     }
 
-    void Hurt()
+    void HitTarget(Transform target)
+    {
+        target.GetComponent<IHurt>()?.Hurt();
+    }
+
+    public void Hurt()
     {
         if (m_hurtingCD <= 0)
         {
@@ -107,25 +141,29 @@ public class Enemy : MonoBehaviour , ICamp
             {
                 m_bodyMeshRenderer.material.color = m_hurtingColor;
                 m_currentHealth--;
-                Debug.Log($"Enemy : [Hurt] hp: {m_currentHealth}");
+                m_HealthScrollBar.size = (float)m_currentHealth / m_HealthMAX;
+
+                if (m_currentHealth <= 0)
+                    Death();
             }
             else
             {
-                Decease();
+                Death();
             }
         }
     }
 
-    void Decease()
+    void Death()
     {
-        m_selfCollider.enabled = false;
-        Debug.Log($"Enemy : [Die] hp: {m_currentHealth}");
+        m_currentHealth = 0;
+        m_ownCollider.enabled = false;
         OnDeath?.Invoke(this);
     }
 
     void RecycleBullet(Bullet bullet)
     {
-        bullet.OnDisappear -= RecycleBullet;
+        bullet.OnHitTarget -= HitTarget;
+        bullet.OnDeath -= RecycleBullet;
         m_bulletPool.Recycle(bullet);
     }
 }
