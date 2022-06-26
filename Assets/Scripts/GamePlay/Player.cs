@@ -311,7 +311,7 @@ public class Player : MonoBehaviour , ICamp , IHurt
         m_behavioralPriorityPassDic[(int)priority] = false;
     }
 
-#region Animation
+    #region Animation
 
 #region Enter
 
