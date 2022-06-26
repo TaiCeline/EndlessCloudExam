@@ -1,5 +1,4 @@
 using System;
-using UnityBerserkersGizmos;
 using UnityEngine;
 
 public class Bullet : Weapon
@@ -94,8 +93,6 @@ public class Bullet : Weapon
         var ray = new Ray(m_ownPrevPosition , (transform.position - m_ownPrevPosition).normalized);
         var distance = (transform.position - m_ownPrevPosition).magnitude;
         hitCount = Physics.RaycastNonAlloc(ray , m_hitResults , distance , 1 << m_targetLayerMask);
-        
-        DebugPhysics.RaycastNonAlloc(ray , m_hitResults , distance , 1 << m_targetLayerMask);
     }
 
     void Death()
