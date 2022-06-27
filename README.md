@@ -2,13 +2,14 @@
 # EndlessCloudExam
 
 1. As a player, on key press (AWSD), I can move the player in any direction.
-    - [x] Move by Tanslate, rotate by assign rotate value.
+    - [x] Player move by Tanslate, rotate by assign rotate value.
 
 2. As a player, per each key press (P), I can use the sword provided to attack once onto any placeholder objects such as a cube.
     - [x] I set the combo mechanism to attack. Press p again, the second attack will be triggered. And the enemy will receive the attack through Boxcast.
 
 3. As a player, I can take damage if I get hit by placeholder projectiles (sphere) that get fired towards the player by the enemy once every 3 seconds.
-    - [x] I use the object pool to generate bullets, and use the RayCast to determine the hit, avoid the bullet goes through wall.
+    - [x] I use the object pool to generate bullets, and use the RayCast to determine the hit, avoid the bullet goes through wall. <br/>
+          After the hit is determined, it will cause damage to the player.
 
 4. As a player, on key press (SPACE), I can perform a dodge in the direction where the character is facing to avoid damage.
     - [x] I declare a dictionary of priorities to make behavior can be sequenced. I prioritize "dodge" over "damage", to avoid damage being triggered.
